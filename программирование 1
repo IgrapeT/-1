@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string>
+#include <limits>
+#include <cctype>
+#include <algorithm>
+#include <windows.h>
+
+using namespace std;
+
+class ATC {
+private:
+    string address;
+    int subscribersCount;
+    double monthlyFee;
+
+public:
+    // Конструктор
+    ATC() : address(""), subscribersCount(0), monthlyFee(0.0) {}
+
+    // Методы установки (свойства для записи)
+    void setAddress(const string& addr) {
+        address = addr;
+    }
+
+    void setSubscribersCount(int count) {
+        subscribersCount = count;
+    }
+
+    void setMonthlyFee(double fee) {
+        monthlyFee = fee;
+    }
+
+    // Метод для расчета общей выручки
+    double calculateTotalRevenue() const {
+        return subscribersCount * monthlyFee;
+    }
+
+    // Метод для вывода информации
+    void displayInfo() const {
+        cout << "\n=== ИНФОРМАЦИЯ ОБ АТС ===" << endl;
+        cout << "Адрес АТС: " << address << endl;
+        cout << "Количество абонентов: " << subscribersCount << endl;
+        cout << "Абонентская плата: " << monthlyFee << " руб." << endl;
+        cout << "Общая выручка: " << calculateTotalRevenue() << " руб." << endl;
+        cout << "==========================" << endl;
+    }
+};
+
+// Функция для проверки, является ли строка числом
+bool isNumber(const string& str) {
+    if (str.empty()) return false;
+    
+    bool hasDecimal = false;
+    for (size_t i = 0; i < str.length(); i++) {
+        // Первый символ может быть минусом
+        if (i == 0 && str[i] == '-') {
+            continue;
+        }
+        // Проверка на десятичную точку или запятую
+        if (str[i] == '.' || str[i] == ',') {
+            if (hasDecimal) return false; // Уже была точка
+            hasDecimal = true;
+            continue;
+        }
+        if (!isdigit(str[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Функция для ввода целого числа с проверками
+int inputInt(const string& prompt) {
+    string input;
+    int value;
+
+    while (true) {
+        cout << prompt;
+        getline(cin, input);
+
+        // Проверка на пустой ввод
+        if (input.empty()) {
+            cout << "Ошибка! Введите число: ";
+            continue;
+        }
+
+        // Попытка преобразования
+        try {
+            value = stoi(input);
+        }
+        catch (const out_of_range& e) {
+            cout << "Ошибка! Число слишком большое. Введите число до 1 000 000: ";
+            continue;
+        }
+        catch (const exception& e) {
+            cout << "Ошибка! Некорректный ввод. Введите целое число: ";
+            continue;
+        }
+
+        // Проверка на отрицательное число
+        if (value < 0) {
+            cout << "Ошибка! Число не может быть отрицательным. Введите положительное число: ";
+            continue;
+        }
+
+        // Проверка на очень большое число
+        if (value > 1000000) {
+            cout << "Ошибка! Слишком большое число. Введите число до 1 000 000: ";
+            continue;
+        }
+
+        break;
+    }
+
+    return value;
+}
+
+// Функция для ввода дробного числа с проверками
+double inputDouble(const string& prompt) {
+    string input;
+    double value;
+
+    while (true) {
+        cout << prompt;
+        getline(cin, input);
+
+        // Проверка на пустой ввод
+        if (input.empty()) {
+            cout << "Ошибка! Введите число: ";
+            continue;
+        }
+
+        // Замена запятой на точку для корректного преобразования
+        for (char& c : input) {
+            if (c == ',') c = '.';
+        }
+
+        // Проверка, что введено число
+        if (!isNumber(input)) {
+            cout << "Ошибка! Введите число: ";
+            continue;
+        }
+
+        // Попытка преобразования
+        try {
+            value = stod(input);
+        }
+        catch (const out_of_range& e) {
+            cout << "Ошибка! Число слишком большое или маленькое. Введите другое число: ";
+            continue;
+        }
+        catch (const exception& e) {
+            cout << "Ошибка! Некорректный ввод. Введите число: ";
+            continue;
+        }
