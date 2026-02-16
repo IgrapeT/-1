@@ -1,0 +1,85 @@
+class ATC:
+    def __init__(self):
+        self._address = ""
+        self._subscribers_count = 0
+        self._monthly_fee = 0.0
+    
+    # Методы установки (свойства для записи)
+    def set_address(self, addr):
+        self._address = addr
+    
+    def set_subscribers_count(self, count):
+        self._subscribers_count = count
+    
+    def set_monthly_fee(self, fee):
+        self._monthly_fee = fee
+    
+    # Метод для расчета общей выручки
+    def calculate_total_revenue(self):
+        return self._subscribers_count * self._monthly_fee
+    
+    # Метод для вывода информации
+    def display_info(self):
+        print("\n=== ИНФОРМАЦИЯ ОБ АТС ===")
+        print(f"Адрес АТС: {self._address}")
+        print(f"Количество абонентов: {self._subscribers_count}")
+        print(f"Абонентская плата: {self._monthly_fee:.2f} руб.")
+        print(f"Общая выручка: {self.calculate_total_revenue():.2f} руб.")
+        print("==========================")
+
+
+# Функция для проверки, является ли строка числом
+def is_number(s):
+    if not s:
+        return False
+    
+    # Разрешаем знак минуса только в начале
+    if s[0] == '-':
+        s = s[1:]
+    
+    # Заменяем запятую на точку
+    s = s.replace(',', '.')
+    
+    # Проверяем, что остались только цифры и не более одной точки
+    has_decimal = False
+    for char in s:
+        if char == '.':
+            if has_decimal:
+                return False  # Уже была точка
+            has_decimal = True
+        elif not char.isdigit():
+            return False
+    
+    return True
+
+
+# Функция для ввода целого числа с проверками
+def input_int(prompt):
+    while True:
+        try:
+            value = input(prompt)
+            
+            # Проверка на пустой ввод
+            if not value.strip():
+                print("Ошибка! Введите число: ")
+                continue
+            
+            # Попытка преобразования
+            value = int(value)
+            
+            # Проверка на отрицательное число
+            if value < 0:
+                print("Ошибка! Число не может быть отрицательным. Введите положительное число: ")
+                continue
+            
+            # Проверка на очень большое число
+            if value > 1000000:
+                print("Ошибка! Слишком большое число. Введите число до 1 000 000: ")
+                continue
+            
+            return value
+            
+        except ValueError:
+            print("Ошибка! Некорректный ввод. Введите целое число: ")
+        except OverflowError:
+            print("Ошибка! Число слишком большое. Введите число до 1 000 000: ")
